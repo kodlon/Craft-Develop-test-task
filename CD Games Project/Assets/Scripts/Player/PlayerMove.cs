@@ -4,7 +4,7 @@ namespace Player
 {
     public class PlayerMove : MonoBehaviour
     {
-        private float _speed = 10f;
+        private readonly float _speed = 10f;
         private Ray _ray;
         private bool _isOnGround;
 
@@ -16,7 +16,21 @@ namespace Player
         private void Update()
         {
             RayInitialize();
+            OnGroundCheck();
+            Move();
 
+            //Position limit
+            Vector3 playerPos = transform.position;
+            transform.position = new Vector3(playerPos.x, Mathf.Clamp(playerPos.y, 0, 8), 0);
+        }
+
+        private void Move()
+        {
+            transform.Translate(Vector3.right * (_speed * Time.deltaTime));
+        }
+
+        private void OnGroundCheck()
+        {
             if (Physics.Raycast(_ray, out RaycastHit hit) & hit.collider != null & hit.distance < 1f)
             {
                 _isOnGround = true;
@@ -26,15 +40,6 @@ namespace Player
             {
                 _isOnGround = false;
             }
-
-            transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, 8), 0);
-
-            Move();
-        }
-
-        private void Move()
-        {
-            transform.Translate(Vector3.right * (_speed * Time.deltaTime));
         }
 
         public void CheckDirection(float value)
