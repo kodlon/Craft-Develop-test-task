@@ -1,5 +1,6 @@
 ﻿using UI.MainMenu;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace Player
@@ -8,9 +9,9 @@ namespace Player
     {
         private readonly float _speed = 10f;
         private Ray _ray;
-        private bool _isOnGround;
         private PlayerGold _playerGold;
-        bool skate = true;
+        private bool _skate = true;
+        public bool IsOnGround { get; private set; } = true;
 
         private void Start()
         {
@@ -29,7 +30,12 @@ namespace Player
 
                 //Position limit
                 Vector3 playerPos = transform.position;
-                transform.position = new Vector3(playerPos.x, Mathf.Clamp(playerPos.y, 0, 8), 0);
+                transform.position = new Vector3(playerPos.x, Mathf.Clamp(playerPos.y, 0.4f, 8f), 0);
+
+                if (transform.position.y < 0.41f)
+                {
+                    PlayerDeath();
+                }
             }
         }
 
@@ -40,33 +46,38 @@ namespace Player
 
         private void OnGroundCheck()
         {
-            
-            
             if (Physics.Raycast(_ray, out RaycastHit hit) & hit.collider != null & hit.distance < 1f)
             {
-                _isOnGround = true;
+                IsOnGround = true;
                 transform.rotation = Quaternion.Euler(Vector3.zero);
+                transform.position = new Vector3(transform.position.x, 0.499f, 0);
 
-                skate = true;
+                _skate = true;
             }
             else
             {
-                _isOnGround = false;
+                IsOnGround = false;
 
-
-                if (skate)
+                if (_skate)
                 {
                     transform.rotation = Quaternion.Euler(new Vector3(0, 0, 30f));
-                    Debug.Log("test");
-                    skate = false;
+                    _skate = false;
                 }
             }
         }
 
         public void CheckDirection(float value)
         {
-            if (!_isOnGround & StartedGame.IsGameStarted)
+            if (!IsOnGround & StartedGame.IsGameStarted)
+            {
                 transform.rotation = Quaternion.Euler(new Vector3(0, 0, value));
+            }
+        }
+
+        private void PlayerDeath()
+        {
+            StartedGame.IsGameStarted = false;
+            transform.position = new Vector3(0, 0.499f, 0);
         }
 
         private void RayInitialize()
@@ -78,7 +89,7 @@ namespace Player
         {
             RayInitialize();
 
-            Gizmos.color = _isOnGround ? Color.green : Color.red;
+            Gizmos.color = IsOnGround ? Color.green : Color.red;
             Gizmos.DrawRay(_ray.origin, _ray.direction);
         }
     }
