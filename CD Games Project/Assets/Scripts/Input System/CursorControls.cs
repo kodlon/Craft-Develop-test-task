@@ -33,13 +33,37 @@ public class @CursorControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Touch"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""fe38d64f-a06e-4490-adeb-deb2ae35724b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Touch Input"",
+                    ""type"": ""Button"",
+                    ""id"": ""d34e1a38-764f-49d1-9f80-2c4d8c1a82cb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""Touch Position"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""6abe30ae-1225-41a4-bc81-1d6f8270be6e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""8cc959e8-60ee-4267-a5c7-7c919f6a2771"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""id"": ""6af6ac01-2767-41fa-ad69-4c633f672e4b"",
+                    ""path"": ""<Mouse>/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -57,6 +81,39 @@ public class @CursorControls : IInputActionCollection, IDisposable
                     ""action"": ""Mouse Position"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab39c4a8-5b7d-4d42-8a05-9b3a52979739"",
+                    ""path"": ""<Touchscreen>/primaryTouch"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Touch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""72618cea-c1f4-496d-9fc5-e444832459fa"",
+                    ""path"": ""<Touchscreen>/primaryTouch/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Touch Input"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d96fc9a9-bbcb-4ce7-a915-a3d31fc11d66"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Touch Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -67,6 +124,9 @@ public class @CursorControls : IInputActionCollection, IDisposable
         m_Mouse = asset.FindActionMap("Mouse", throwIfNotFound: true);
         m_Mouse_LeftClick = m_Mouse.FindAction("LeftClick", throwIfNotFound: true);
         m_Mouse_MousePosition = m_Mouse.FindAction("Mouse Position", throwIfNotFound: true);
+        m_Mouse_Touch = m_Mouse.FindAction("Touch", throwIfNotFound: true);
+        m_Mouse_TouchInput = m_Mouse.FindAction("Touch Input", throwIfNotFound: true);
+        m_Mouse_TouchPosition = m_Mouse.FindAction("Touch Position", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -118,12 +178,18 @@ public class @CursorControls : IInputActionCollection, IDisposable
     private IMouseActions m_MouseActionsCallbackInterface;
     private readonly InputAction m_Mouse_LeftClick;
     private readonly InputAction m_Mouse_MousePosition;
+    private readonly InputAction m_Mouse_Touch;
+    private readonly InputAction m_Mouse_TouchInput;
+    private readonly InputAction m_Mouse_TouchPosition;
     public struct MouseActions
     {
         private @CursorControls m_Wrapper;
         public MouseActions(@CursorControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @LeftClick => m_Wrapper.m_Mouse_LeftClick;
         public InputAction @MousePosition => m_Wrapper.m_Mouse_MousePosition;
+        public InputAction @Touch => m_Wrapper.m_Mouse_Touch;
+        public InputAction @TouchInput => m_Wrapper.m_Mouse_TouchInput;
+        public InputAction @TouchPosition => m_Wrapper.m_Mouse_TouchPosition;
         public InputActionMap Get() { return m_Wrapper.m_Mouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -139,6 +205,15 @@ public class @CursorControls : IInputActionCollection, IDisposable
                 @MousePosition.started -= m_Wrapper.m_MouseActionsCallbackInterface.OnMousePosition;
                 @MousePosition.performed -= m_Wrapper.m_MouseActionsCallbackInterface.OnMousePosition;
                 @MousePosition.canceled -= m_Wrapper.m_MouseActionsCallbackInterface.OnMousePosition;
+                @Touch.started -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouch;
+                @Touch.performed -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouch;
+                @Touch.canceled -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouch;
+                @TouchInput.started -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouchInput;
+                @TouchInput.performed -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouchInput;
+                @TouchInput.canceled -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouchInput;
+                @TouchPosition.started -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouchPosition;
+                @TouchPosition.performed -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouchPosition;
+                @TouchPosition.canceled -= m_Wrapper.m_MouseActionsCallbackInterface.OnTouchPosition;
             }
             m_Wrapper.m_MouseActionsCallbackInterface = instance;
             if (instance != null)
@@ -149,6 +224,15 @@ public class @CursorControls : IInputActionCollection, IDisposable
                 @MousePosition.started += instance.OnMousePosition;
                 @MousePosition.performed += instance.OnMousePosition;
                 @MousePosition.canceled += instance.OnMousePosition;
+                @Touch.started += instance.OnTouch;
+                @Touch.performed += instance.OnTouch;
+                @Touch.canceled += instance.OnTouch;
+                @TouchInput.started += instance.OnTouchInput;
+                @TouchInput.performed += instance.OnTouchInput;
+                @TouchInput.canceled += instance.OnTouchInput;
+                @TouchPosition.started += instance.OnTouchPosition;
+                @TouchPosition.performed += instance.OnTouchPosition;
+                @TouchPosition.canceled += instance.OnTouchPosition;
             }
         }
     }
@@ -157,5 +241,8 @@ public class @CursorControls : IInputActionCollection, IDisposable
     {
         void OnLeftClick(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
+        void OnTouch(InputAction.CallbackContext context);
+        void OnTouchInput(InputAction.CallbackContext context);
+        void OnTouchPosition(InputAction.CallbackContext context);
     }
 }

@@ -12,10 +12,11 @@ namespace Input_System
         private void Awake()
         {
             _controls = new CursorControls();
-            _controls.Mouse.LeftClick.started += ctx => TouchedScreen(ctx);
-            _controls.Mouse.LeftClick.performed += _ => ReleasedScreen(); //Called when LMB release
+            //_controls.Mouse.LeftClick.started += ctx => TouchedScreen(ctx);
+            //_controls.Mouse.LeftClick.performed += _ => ReleasedScreen(); //Called when LMB release
 
-            _controls.Mouse.Touch.started += ctx => TouchedScreen(ctx);
+            _controls.Mouse.TouchInput.started += ctx => TouchedScreen(ctx);
+            _controls.Mouse.TouchInput.canceled += ctx => ReleasedScreen(ctx);
             
         }
 
@@ -32,12 +33,13 @@ namespace Input_System
         private void TouchedScreen(InputAction.CallbackContext context)
         {
             Debug.Log("Touch");
-            PlayerControls.VisibilityOfSlider(_controls.Mouse.MousePosition.ReadValue<Vector2>(), true);
+            PlayerControls.VisibilityOfSlider(_controls.Mouse.TouchPosition.ReadValue<Vector2>(), true);
         }
 
-        private void ReleasedScreen()
+        private void ReleasedScreen(InputAction.CallbackContext context)
         {
-            PlayerControls.VisibilityOfSlider(_controls.Mouse.MousePosition.ReadValue<Vector2>());
+            Debug.Log("UnTouch");
+            PlayerControls.VisibilityOfSlider(_controls.Mouse.TouchPosition.ReadValue<Vector2>());
         }
     }
 }
