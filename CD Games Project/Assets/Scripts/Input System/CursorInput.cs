@@ -32,13 +32,11 @@ namespace Input_System
 
         private void TouchedScreen(InputAction.CallbackContext context)
         {
-            Debug.Log("Touch");
             PlayerControls.VisibilityOfSlider(_controls.Mouse.TouchPosition.ReadValue<Vector2>(), true);
         }
 
         private void ReleasedScreen(InputAction.CallbackContext context)
         {
-            Debug.Log("UnTouch");
             PlayerControls.VisibilityOfSlider(_controls.Mouse.TouchPosition.ReadValue<Vector2>());
         }
     }
