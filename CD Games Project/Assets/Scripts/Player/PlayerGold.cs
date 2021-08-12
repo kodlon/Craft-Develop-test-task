@@ -14,7 +14,7 @@ namespace Player
         private PlayerMove _playerMove;
         private Vector3 _pos = new Vector3(0, 0.2f, 0);
         private Ray _ray;
-        private int _gold = 0;
+        public int Gold { get; private set; } = 0;
         private List<GameObject> boardsInBackPack = new List<GameObject>();
 
 
@@ -32,9 +32,10 @@ namespace Player
             if (Physics.Raycast(_ray, out RaycastHit hit) & hit.collider != null & hit.distance < 1f &
                 hit.collider.CompareTag("Gold"))
             {
-                _gold++;
+                Gold++;
 
-                boardsInBackPack.Add(Instantiate(boardBackPack, playerBackPack.position + _pos, transform.rotation,
+                boardsInBackPack.Insert(0, Instantiate(boardBackPack, playerBackPack.position + _pos,
+                    transform.rotation,
                     playerBackPack));
                 _pos = new Vector3(0, _pos.y + 0.1f, 0);
 
@@ -45,15 +46,22 @@ namespace Player
 
         private IEnumerator BoardBuilding()
         {
-            int i = boardsInBackPack.Count;
+            int i = 0;
             while (true)
             {
                 yield return new WaitForSeconds(0.2f);
-                if (_gold >= 2 & !_playerMove.IsOnGround)
+                if (Gold >= 1 & !_playerMove.IsOnGround & i < boardsInBackPack.Count)
                 {
                     Instantiate(board, transform.position, transform.rotation);
                     Destroy(boardsInBackPack[i].gameObject);
-                    i--;
+                    i++;
+                    Gold--;
+
+                    Debug.Log(Gold);
+                }
+                else
+                {
+                    i = 0;
                 }
             }
         }
