@@ -4,7 +4,7 @@ namespace UI.MainMenu
 {
     public class ExitGame : MonoBehaviour
     {
-        public void OnExitButtonPressed()
+        public void OnExitPressed()
         {
             Application.Quit();
         }
