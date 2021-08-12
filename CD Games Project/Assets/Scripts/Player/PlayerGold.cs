@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,8 +13,8 @@ namespace Player
         private PlayerMove _playerMove;
         private Vector3 _pos = new Vector3(0, 0.2f, 0);
         private Ray _ray;
-        public int Gold { get; private set; } = 0;
-        private List<GameObject> boardsInBackPack = new List<GameObject>();
+        public int Gold { get; private set; }
+        private List<GameObject> _boardsInBackPack = new List<GameObject>();
 
 
         private void Start()
@@ -34,7 +33,7 @@ namespace Player
             {
                 Gold++;
 
-                boardsInBackPack.Insert(0, Instantiate(boardBackPack, playerBackPack.position + _pos,
+                _boardsInBackPack.Insert(0, Instantiate(boardBackPack, playerBackPack.position + _pos,
                     transform.rotation,
                     playerBackPack));
                 _pos = new Vector3(0, _pos.y + 0.1f, 0);
@@ -50,10 +49,10 @@ namespace Player
             while (true)
             {
                 yield return new WaitForSeconds(0.2f);
-                if (Gold >= 1 & !_playerMove.IsOnGround & i < boardsInBackPack.Count)
+                if (Gold >= 1 & !_playerMove.IsOnGround & i < _boardsInBackPack.Count)
                 {
                     Instantiate(board, transform.position, transform.rotation);
-                    Destroy(boardsInBackPack[i].gameObject);
+                    Destroy(_boardsInBackPack[i].gameObject);
                     i++;
                     Gold--;
 
