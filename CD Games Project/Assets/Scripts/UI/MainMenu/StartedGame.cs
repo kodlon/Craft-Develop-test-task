@@ -9,8 +9,7 @@ namespace UI.MainMenu
         public void OnStartGamePressed()
         {
             IsGameStarted = true;
-            
-            gameObject.SetActive(false);
+            gameObject.transform.parent.gameObject.SetActive(false);
         }
     }
 }
