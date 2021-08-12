@@ -10,6 +10,7 @@ namespace Player
         private readonly float _speed = 10f;
         private Ray _ray;
         private PlayerGold _playerGold;
+        private BarrierProcess _barrierProcess;
         private bool _skate = true;
         public bool IsOnGround { get; private set; } = true;
 
@@ -17,6 +18,7 @@ namespace Player
         {
             RayInitialize();
             _playerGold = GetComponent<PlayerGold>();
+            _barrierProcess = GetComponent<BarrierProcess>();
         }
 
         private void Update()
@@ -30,9 +32,10 @@ namespace Player
 
                 //Position limit
                 Vector3 playerPos = transform.position;
-                transform.position = new Vector3(playerPos.x, Mathf.Clamp(playerPos.y, 0.4f, 50f), 0);
+                transform.position = new Vector3(playerPos.x, Mathf.Clamp(playerPos.y, -2f, 75f), 0);
+                
 
-                if (transform.position.y < 0.41f)
+                if (transform.position.y < -1.5f || _barrierProcess.BarrierCheck())
                 {
                     PlayerDeath();
                 }
@@ -64,7 +67,7 @@ namespace Player
 
                 if (_skate)
                 {
-                    transform.rotation = Quaternion.Euler(new Vector3(0, 0, 30f));
+                    transform.rotation = Quaternion.Euler(new Vector3(0, 0, 5f));
                     _skate = false;
                 }
             }
