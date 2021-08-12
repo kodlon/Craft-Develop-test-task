@@ -72,7 +72,7 @@ namespace Player
 
         public void CheckDirection(float value)
         {
-            if (!IsOnGround & StartedGame.IsGameStarted)
+            if (!IsOnGround & StartedGame.IsGameStarted & _playerGold.Gold != 0)
             {
                 transform.rotation = Quaternion.Euler(new Vector3(0, 0, value));
             }
