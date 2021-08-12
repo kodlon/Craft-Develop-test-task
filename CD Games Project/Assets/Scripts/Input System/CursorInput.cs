@@ -1,5 +1,6 @@
 using UI.HUD;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Input_System
 {
@@ -11,8 +12,12 @@ namespace Input_System
         private void Awake()
         {
             _controls = new CursorControls();
-            _controls.Mouse.LeftClick.started += _ => TouchedScreen();
-            _controls.Mouse.LeftClick.performed += _ => ReleasedScreen(); //Called when LMB release
+            //_controls.Mouse.LeftClick.started += ctx => TouchedScreen(ctx);
+            //_controls.Mouse.LeftClick.performed += _ => ReleasedScreen(); //Called when LMB release
+
+            _controls.Mouse.TouchInput.started += ctx => TouchedScreen(ctx);
+            _controls.Mouse.TouchInput.canceled += ctx => ReleasedScreen(ctx);
+            
         }
 
         private void OnEnable()
@@ -25,14 +30,14 @@ namespace Input_System
             _controls.Disable();
         }
 
-        private void TouchedScreen()
+        private void TouchedScreen(InputAction.CallbackContext context)
         {
-            PlayerControls.VisibilityOfSlider(_controls.Mouse.MousePosition.ReadValue<Vector2>(), true);
+            PlayerControls.VisibilityOfSlider(_controls.Mouse.TouchPosition.ReadValue<Vector2>(), true);
         }
 
-        private void ReleasedScreen()
+        private void ReleasedScreen(InputAction.CallbackContext context)
         {
-            PlayerControls.VisibilityOfSlider(_controls.Mouse.MousePosition.ReadValue<Vector2>());
+            PlayerControls.VisibilityOfSlider(_controls.Mouse.TouchPosition.ReadValue<Vector2>());
         }
     }
 }

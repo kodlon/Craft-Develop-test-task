@@ -6,11 +6,10 @@ namespace UI.MainMenu
     {
         public static bool IsGameStarted { get; set; }
 
-        public void GameStarted()
+        public void OnStartGamePressed()
         {
             IsGameStarted = true;
-            
-            gameObject.SetActive(false);
+            gameObject.transform.parent.gameObject.SetActive(false);
         }
     }
 }
