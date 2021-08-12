@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Player
@@ -31,18 +32,24 @@ namespace Player
             if (Physics.Raycast(_ray, out RaycastHit hit) & hit.collider != null & hit.distance < 1f &
                 hit.collider.CompareTag("Gold"))
             {
+                if (Gold == 0)
+                {
+                    _pos = new Vector3(0, 0.2f, 0);
+                }
+                
                 Gold++;
+                
 
                 _boardsInBackPack.Insert(0, Instantiate(boardBackPack, playerBackPack.position + _pos,
                     transform.rotation,
                     playerBackPack));
                 _pos = new Vector3(0, _pos.y + 0.1f, 0);
-
+                
 
                 Destroy(hit.collider.gameObject);
             }
         }
-
+        
         private IEnumerator BoardBuilding()
         {
             int i = 0;
@@ -51,12 +58,10 @@ namespace Player
                 yield return new WaitForSeconds(0.2f);
                 if (Gold >= 1 & !_playerMove.IsOnGround & i < _boardsInBackPack.Count)
                 {
-                    Instantiate(board, transform.position, transform.rotation);
+                    Destroy(Instantiate(board, transform.position, transform.rotation), 5);
                     Destroy(_boardsInBackPack[i].gameObject);
                     i++;
                     Gold--;
-
-                    Debug.Log(Gold);
                 }
                 else
                 {
