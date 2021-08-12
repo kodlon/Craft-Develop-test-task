@@ -30,7 +30,7 @@ namespace Player
 
                 //Position limit
                 Vector3 playerPos = transform.position;
-                transform.position = new Vector3(playerPos.x, Mathf.Clamp(playerPos.y, 0.4f, 8f), 0);
+                transform.position = new Vector3(playerPos.x, Mathf.Clamp(playerPos.y, 0.4f, 50f), 0);
 
                 if (transform.position.y < 0.41f)
                 {
@@ -42,6 +42,10 @@ namespace Player
         private void Move()
         {
             transform.Translate(Vector3.right * (_speed * Time.deltaTime));
+            if (!IsOnGround & _playerGold.Gold <= 0)
+            {
+                transform.Translate(Vector3.down * (_speed * Time.deltaTime));
+            }
         }
 
         private void OnGroundCheck()
@@ -77,7 +81,7 @@ namespace Player
         private void PlayerDeath()
         {
             StartedGame.IsGameStarted = false;
-            transform.position = new Vector3(0, 0.499f, 0);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
         private void RayInitialize()
